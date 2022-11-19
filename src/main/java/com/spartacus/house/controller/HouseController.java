@@ -1,6 +1,9 @@
 package com.spartacus.house.controller;
 
+import com.spartacus.house.exception.ServiceException;
 import com.spartacus.house.model.House;
+import com.spartacus.house.result.GlobalResult;
+import com.spartacus.house.result.GlobalResultGenerator;
 import com.spartacus.house.service.HouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +21,9 @@ public class HouseController {
     private HouseService houseService;
 
     @RequestMapping(value="/hello/{id}",method = RequestMethod.GET)
-    public House index(@PathVariable("id") Integer id){
+    public GlobalResult<House> index(@PathVariable("id") Integer id) throws ServiceException {
         House house = houseService.getById(id);
         System.out.println(house);
-        return  house;
+        return GlobalResultGenerator.genSuccessResult(house);
     }
 }
