@@ -1,6 +1,11 @@
 package com.spartacus.house.controller;
 
+import com.spartacus.house.model.House;
+import com.spartacus.house.service.HouseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -9,9 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HouseController {
 
-    @RequestMapping("/hello")
-    public String index(){
-        return  "hello";
-    }
+    @Autowired
+    private HouseService houseService;
 
+    @RequestMapping(value="/hello/{id}",method = RequestMethod.GET)
+    public House index(@PathVariable("id") Integer id){
+        House house = houseService.getById(id);
+        System.out.println(house);
+        return  house;
+    }
 }

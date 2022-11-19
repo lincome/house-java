@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spartacus.house.mapper.HouseMapper">
+
+    <resultMap id="BaseResultMap" type="com.spartacus.house.model.House">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP"/>
+            <result property="deletedTime" column="deleted_time" jdbcType="TIMESTAMP"/>
+            <result property="date" column="date" jdbcType="TIMESTAMP"/>
+            <result property="area" column="area" jdbcType="VARCHAR"/>
+            <result property="roomArea" column="room_area" jdbcType="VARCHAR"/>
+            <result property="roomNumber" column="room_number" jdbcType="INTEGER"/>
+            <result property="memo" column="memo" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_by,created_time,
+        updated_by,updated_time,deleted_time,
+        date,area,room_area,
+        room_number,memo
+    </sql>
+</mapper>
