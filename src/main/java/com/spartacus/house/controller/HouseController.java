@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
  * @author spartacus
  */
 @RestController
 public class HouseController {
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private HouseService houseService;
@@ -23,7 +26,8 @@ public class HouseController {
     @RequestMapping(value="/hello/{id}",method = RequestMethod.GET)
     public GlobalResult<House> index(@PathVariable("id") Integer id) throws ServiceException {
         House house = houseService.getById(id);
-        System.out.println(house);
+        stringRedisTemplate.opsForValue().set("strKey", "zwqh");
+        System.out.println(stringRedisTemplate.opsForValue().get("strKey"));
         return GlobalResultGenerator.genSuccessResult(house);
     }
 }

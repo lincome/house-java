@@ -3,7 +3,7 @@ package com.spartacus.house.result;
 import lombok.Data;
 
 /**
- * @author ronger
+ * @author spartacus
  */
 @Data
 public class GlobalResult<T> {

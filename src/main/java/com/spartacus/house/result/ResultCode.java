@@ -3,7 +3,7 @@ package com.spartacus.house.result;
 /**
  * 响应码枚举，参考HTTP状态码的语义
  *
- * @author ronger
+ * @author spartacus
  */
 public enum ResultCode {
     // 成功
