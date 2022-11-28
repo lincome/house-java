@@ -18,6 +18,8 @@
             <result property="memo" column="memo" jdbcType="VARCHAR"/>
     </resultMap>
 
+
+
     <sql id="Base_Column_List">
         id,created_by,created_time,
         updated_by,updated_time,deleted_time,
@@ -25,13 +27,18 @@
         room_number,memo
     </sql>
 
-    <!-- 查询消息记录 -->
-    <select id="queryList" resultType="com.spartacus.house.model.House">
-        select * from House
-        where date > #{date}
-        <if test="group!=null and group!=''">
-            group by #{group}
-        </if>
+<!--    <resultMap id="TreeModel" type="com.spartacus.house.dto.DateDto" >-->
+<!--        <result column="date" property="date" jdbcType="date"/>-->
+<!--        <result column="area" property="area" jdbcType="area"/>-->
+<!--        <result column="room_numbers" property="room_numbers" jdbcType="INTEGER"/>-->
+<!--    </resultMap>-->
+
+    <!-- 查询记录 -->
+    <select id="queryList" resultType="java.util.Map">
+        select left(date,#{groupNum}) as date,area,sum(room_number) as room_numbers
+        from House
+        where date > '#{whereDate}'
+        group by #{groupString},`area`
         ORDER BY `date` ASC
     </select>
 </mapper>

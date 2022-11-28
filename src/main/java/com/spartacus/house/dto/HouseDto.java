@@ -164,7 +164,7 @@ public class HouseDto {
 
         private String name;
         private String type;
-        private List<Integer> data;
+        private List<Object> data;
 
         public String getName() {
             return name;
@@ -182,11 +182,11 @@ public class HouseDto {
             this.type = type;
         }
 
-        public List<Integer> getData() {
+        public List<Object> getData() {
             return data;
         }
 
-        public void setData(List<Integer> data) {
+        public void setData(List<Object> data) {
             this.data = data;
         }
     }

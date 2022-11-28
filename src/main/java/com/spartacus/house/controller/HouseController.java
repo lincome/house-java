@@ -92,7 +92,7 @@ public class HouseController {
 
     @GetMapping("/get")
     public GlobalResult<HouseDto> get(@RequestParam(defaultValue = "0") Integer page,
-                                      @RequestParam(name = "limit") String limit,
+                                      @RequestParam(name = "limit") Integer limit,
                                       @RequestParam(name = "group") String group) {
         HouseDto houseDto = new HouseDto();
 
@@ -136,36 +136,72 @@ public class HouseController {
 
         // 2. 查询消息数据
         String date = "2022-10-01";
-        List<House> list = houseMapper.queryList(date, group);
+        String groupString = "";
+        String whereDate = "";
+        int groupNum = 10;
+        switch (group){
+            //最近几个月
+            case "month":
+                groupString = "left(date,7)";
+                groupNum = 7;
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(new Date());
+                cal.add(Calendar.MONTH, -limit);
+                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                // whereDate =cal.getTime();
+                whereDate =ft.format(cal.getTime());
+                break;
+            //最近几年
+            case "year":
+                groupString = "left(date,4)";
+                groupNum = 4;
+                Calendar cal1 = Calendar.getInstance();
+                cal1.setTime(new Date());
+                cal1.add(Calendar.YEAR, -limit);
+                SimpleDateFormat ft1 = new SimpleDateFormat("yyyy-MM-dd");
+                whereDate =ft1.format(cal1.getTime());
+                break;
+            //最近几天
+            default:
+                groupString = "left(date,10)";
+                groupNum = 10;
+                Calendar cal2 = Calendar.getInstance();
+                cal2.setTime(new Date());
+                cal2.add(Calendar.DATE, -limit);
+                SimpleDateFormat ft2 = new SimpleDateFormat("yyyy-MM-dd");
+                whereDate =ft2.format(cal2.getTime());
+        }
+
+        List<Map<String,Object>> list = houseMapper.queryList(groupNum,whereDate,groupString);
 
        // List<House> list = houseService.list(query);
         List<HouseDto.SeriesDataBean> seriesData = new ArrayList<>();
         List<String> xData = new ArrayList<>();
-       // Set<String> xData = new HashSet<>();
         if (list.size() > 0) {
             //x轴
             //组合区域map
-            Map<String, List<Integer>> areaMap = new HashMap<>();
-            for (House house : list) {
-                if (areaMap.containsKey(house.getArea())) {
-                    areaMap.get(house.getArea()).add(house.getRoomNumber());
+            Map<Object, List<Object>> areaMap = new HashMap<>();
+            for (Map<String, Object> house : list) {
+                // 空字符串
+                System.out.println(house.get("room_numbers"));
+                if (areaMap.containsKey(house.get("area"))) {
+                    areaMap.get(house.get("area")).add(house.get("room_numbers"));
                 } else {
-                    List<Integer> roomNumber = new ArrayList<>();
-                    roomNumber.add(house.getRoomNumber());
-                    areaMap.put(house.getArea(), roomNumber);
+                    List<Object> roomNumber = new ArrayList<>();
+                    roomNumber.add(house.get("room_numbers"));
+                    areaMap.put(house.get("area"), roomNumber);
                 }
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-                xData.add(ft.format(house.getDate()));
+                // SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                xData.add(house.get("date").toString());
             }
             //set集合去重，不打乱顺序
-            Set<String> set = new HashSet<String>();
-            List<String> newList = new ArrayList<String>();
+            Set<String> set = new HashSet<>();
+            List<String> newList = new ArrayList<>();
             for (String cd : xData) {
                 if (set.add(cd)) {
                     newList.add(cd);
                 }
             }
-           // System.out.println(newList);
            // List<String> newList = new ArrayList<String>(xData);
             houseDto.setXaData(newList);
             for (String areaRange : areaRangeData) {

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author spartacus
@@ -17,7 +18,7 @@ import java.util.List;
 @Mapper
 public interface HouseMapper extends BaseMapper<House> {
 
-    List<House> queryList(@Param("date")String date, @Param("group")String group);
+    List<Map<String,Object>> queryList(@Param("groupNum")int groupNum, @Param("whereDate") String whereDate, @Param("groupString")String groupString);
 }
 
 
