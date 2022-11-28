@@ -1,6 +1,7 @@
 package com.spartacus.house.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.spartacus.house.dto.HouseDto;
 import com.spartacus.house.exception.ServiceException;
 import com.spartacus.house.mapper.HouseMapper;
@@ -9,12 +10,9 @@ import com.spartacus.house.result.GlobalResult;
 import com.spartacus.house.result.GlobalResultGenerator;
 import com.spartacus.house.service.HouseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -86,7 +84,7 @@ public class HouseController {
         user.setArea("ddd");
         boolean flag = houseService.removeById(user);
 
-        String[] myArray = { "Apple", "Banana", "Orange" };
+        String[] myArray = {"Apple", "Banana", "Orange"};
         List<String> myList = Arrays.asList(myArray);
 
         return GlobalResultGenerator.genSuccessResult(flag);
@@ -94,15 +92,15 @@ public class HouseController {
 
     @GetMapping("/get")
     public GlobalResult<HouseDto> get(@RequestParam(defaultValue = "0") Integer page,
-                                      @RequestParam(name="limit") String limit,
-                                      @RequestParam(name="group") String group) {
+                                      @RequestParam(name = "limit") String limit,
+                                      @RequestParam(name = "group") String group) {
         HouseDto houseDto = new HouseDto();
 
         List<String> areaRangeData = Arrays.asList("闽侯", "连江", "罗源", "闽清", "永泰", "长乐", "福清", "鼓楼区", "台江区", "晋安区", "马尾区", "仓山区");
         houseDto.setAreaRangeData(areaRangeData);
 
         List<HouseDto.AreaRangeBean> areaRangeList = new ArrayList<>();
-        for(String areaRange:areaRangeData){
+        for (String areaRange : areaRangeData) {
             HouseDto.AreaRangeBean areaRangeBean = new HouseDto.AreaRangeBean();
             areaRangeBean.setLabel(areaRange);
             areaRangeBean.setValue(areaRange);
@@ -112,7 +110,7 @@ public class HouseController {
 
         List<String> groupRange = Arrays.asList("day", "month", "year");
         List<HouseDto.GroupDataBean> groupData = new ArrayList<>();
-        for(String group1:groupRange){
+        for (String group1 : groupRange) {
             HouseDto.GroupDataBean groupDataBean = new HouseDto.GroupDataBean();
             groupDataBean.setLabel(group1);
             groupDataBean.setValue(group1);
@@ -122,7 +120,7 @@ public class HouseController {
 
         List<HouseDto.LimitRangeBean> limitRange = new ArrayList<>();
         List<Integer> limitRangeData = Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 365);
-        for (int day :limitRangeData) {
+        for (int day : limitRangeData) {
             HouseDto.LimitRangeBean limitRangeBean = new HouseDto.LimitRangeBean();
             limitRangeBean.setLabel(day);
             limitRangeBean.setValue(day);
@@ -130,28 +128,28 @@ public class HouseController {
         }
         houseDto.setLimitRange(limitRange);
 
-//        LambdaQueryWrapper<House> query = new LambdaQueryWrapper<>();
-//        query.orderByAsc(House::getDate);
-//        query.gt(House::getDate,"2022-10-01");
-//        query.groupBy(House::getDate);
-//        query.groupBy(House::getArea);
+       // LambdaQueryWrapper<House> query = new LambdaQueryWrapper<>();
+       // query.orderByAsc(House::getDate);
+       // query.gt(House::getDate,"2022-10-01");
+       // query.groupBy(House::getDate);
+       // query.groupBy(House::getArea);
 
         // 2. 查询消息数据
-        String date="2022-10-01";
+        String date = "2022-10-01";
         List<House> list = houseMapper.queryList(date, group);
 
-//        List<House> list = houseService.list(query);
-        List<HouseDto.SeriesDataBean> seriesData= new ArrayList<>();
+       // List<House> list = houseService.list(query);
+        List<HouseDto.SeriesDataBean> seriesData = new ArrayList<>();
         List<String> xData = new ArrayList<>();
-//        Set<String> xData = new HashSet<>();
-        if (list.size()>0){
+       // Set<String> xData = new HashSet<>();
+        if (list.size() > 0) {
             //x轴
             //组合区域map
             Map<String, List<Integer>> areaMap = new HashMap<>();
-            for(House house:list){
-                if(areaMap.containsKey(house.getArea())){
+            for (House house : list) {
+                if (areaMap.containsKey(house.getArea())) {
                     areaMap.get(house.getArea()).add(house.getRoomNumber());
-                }else{
+                } else {
                     List<Integer> roomNumber = new ArrayList<>();
                     roomNumber.add(house.getRoomNumber());
                     areaMap.put(house.getArea(), roomNumber);
@@ -167,10 +165,10 @@ public class HouseController {
                     newList.add(cd);
                 }
             }
-//            System.out.println(newList);
-//            List<String> newList = new ArrayList<String>(xData);
+           // System.out.println(newList);
+           // List<String> newList = new ArrayList<String>(xData);
             houseDto.setXaData(newList);
-            for(String areaRange:areaRangeData) {
+            for (String areaRange : areaRangeData) {
                 HouseDto.SeriesDataBean seriesDataBean = new HouseDto.SeriesDataBean();
                 seriesDataBean.setData(areaMap.get(areaRange));
                 seriesDataBean.setName(areaRange);
