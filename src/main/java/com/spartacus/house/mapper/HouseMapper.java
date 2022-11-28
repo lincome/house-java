@@ -3,6 +3,9 @@ package com.spartacus.house.mapper;
 import com.spartacus.house.model.House;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author spartacus
@@ -14,6 +17,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface HouseMapper extends BaseMapper<House> {
 
+    List<House> queryList(@Param("date")String date, @Param("group")String group);
 }
 
 

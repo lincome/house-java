@@ -24,4 +24,14 @@
         date,area,room_area,
         room_number,memo
     </sql>
+
+    <!-- 查询消息记录 -->
+    <select id="queryList" resultType="com.spartacus.house.model.House">
+        select * from House
+        where date > #{date}
+        <if test="group!=null and group!=''">
+            group by #{group}
+        </if>
+        ORDER BY `date` ASC
+    </select>
 </mapper>
